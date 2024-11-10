@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, Naveen!</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ff6600);
+            background-size: 300% 300%;
+            animation: gradient 5s ease infinite;
+            font-family: Arial, sans-serif;
+            color: #fff;
+            text-align: center;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .container {
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            color: #fff;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+        p {
+            font-size: 1.2em;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        .balloon {
+            position: absolute;
+            bottom: 0;
+            width: 100px;
+            height: 120px;
+            border-radius: 50%;
+            cursor: pointer;
+            animation: floatUp 5s linear infinite;
+        }
+        @keyframes floatUp {
+            0% { bottom: 0; }
+            100% { bottom: 100vh; }
+        }
+        .balloon:hover {
+            transform: scale(1.1);
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #ff66cc;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #ff3399;
+        }
+        .balloon-pop-message {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #fff;
+        }
+        .scoreboard, .upgrades {
+            font-size: 1.5em;
+            margin-top: 20px;
+            color: #fff;
+        }
+        .upgrade-button {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #ff3399;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .upgrade-button:hover {
+            background-color: #ff66cc;
+        }
+        .footer {
+            position: absolute;
+            left: 10px;
+            bottom: 10px;
+            font-size: 1em;
+            color: rgba(255, 255, 255, 0.7);
+            font-family: 'Arial', sans-serif;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎉 Happy Birthday, Naveen! 🎉</h1>
+            <p>Click on the balloons to pop them and earn points!</p>
+        </header>
+
+        <section>
+            <button onclick="startGame()">Start Game</button>
+            <div id="balloons"></div>
+            <div id="popMessage" class="balloon-pop-message"></div>
+            <div id="scoreboard" class="scoreboard">Score: 0</div>
+        </section>
+
+        <section class="upgrades">
+            <div>Purchase Area:</div>
+            <button class="upgrade-button" onclick="buyCake()">Buy Cake (Cost: 30 points)</button>
+            <button class="upgrade-button" onclick="buyGift()">Buy Gift (Cost: 50 points)</button>
+        </section>
+    </div>
+
+    <div class="footer">
+        Made by Dino
+    </div>
+
+    <script>
+        let gameStarted = false;
+        let score = 0;
+        let purchasedCake = false;
+        let purchasedGift = false;
+
+        function startGame() {
+            if (gameStarted) return;
+            gameStarted = true;
+            document.getElementById("popMessage").textContent = "Start popping the balloons!";
+            createBalloon();
+        }
+
+        function createBalloon() {
+            const balloon = document.createElement("div");
+            balloon.classList.add("balloon");
+            balloon.style.left = `${Math.random() * 90}%`;
+            balloon.style.backgroundColor = getRandomColor();
+            balloon.addEventListener("click", () => popBalloon(balloon));
+
+            document.getElementById("balloons").appendChild(balloon);
+
+            // Make sure a new balloon is created every 3 seconds
+            setTimeout(createBalloon, 3000);
+        }
+
+        function popBalloon(balloon) {
+            balloon.style.display = "none";
+            score += 5; // Each balloon pop gives 5 points
+            document.getElementById("scoreboard").textContent = `Score: ${score}`;
+            const popMessage = document.getElementById("popMessage");
+            popMessage.textContent = "🎉 POP! 🎉 Well done!";
+            setTimeout(() => {
+                popMessage.textContent = "Start popping the balloons!";
+            }, 1000);
+        }
+
+        function buyCake() {
+            if (score >= 30 && !purchasedCake) {
+                score -= 30;
+                purchasedCake = true;
+                document.getElementById("scoreboard").textContent = `Score: ${score}`;
+                alert("🎂 You bought a cake! 🎂");
+            } else if (purchasedCake) {
+                alert("You already bought a cake!");
+            } else {
+                alert("You need 30 points to buy the cake!");
+            }
+        }
+
+        function buyGift() {
+            if (score >= 50 && !purchasedGift) {
+                score -= 50;
+                purchasedGift = true;
+                document.getElementById("scoreboard").textContent = `Score: ${score}`;
+                window.location.href = "https://www.lamborghini.com"; // Redirects to Lamborghini website
+            } else if (purchasedGift) {
+                alert("You already bought a gift!");
+            } else {
+                alert("You need 50 points to buy the gift!");
+            }
+        }
+
+        function getRandomColor() {
+            const colors = ["#ff5733", "#33ff57", "#5733ff", "#f733ff", "#33aaff", "#ffcc33"];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+    </script>
+</body>
+</html>
